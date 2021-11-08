@@ -29,7 +29,7 @@ contract SimpleBank {
      */
     
     // Add an argument for this event, an accountAddress
-    event LogEnrolled();
+    event LogEnrolled(address accountAddress);
 
     // Add 2 arguments for this event, an accountAddress and an amount
     event LogDepositMade(address accountAddress, uint amount);
@@ -65,6 +65,7 @@ contract SimpleBank {
     function enroll() public returns (bool){
       // 1. enroll of the sender of this transaction
       enrolled[msg.sender] = true;
+      emit LogEnrolled(msg.sender);
       return enrolled[msg.sender];
     }
 
@@ -103,6 +104,7 @@ contract SimpleBank {
       // 2. Transfer Eth to the sender and decrement the withdrawal amount from
       //    sender's balance
       balances[msg.sender] -= withdrawAmount;
+      msg.sender.transfer(withdrawAmount);
 
       // 3. Emit the appropriate event for this message
       emit LogWithdrawal(msg.sender, withdrawAmount, getBalance());
